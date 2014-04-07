@@ -48,11 +48,30 @@ testpath = '..\\binary\\test.jpg'
 
 def calltagger(pathToPic=testpath):
   print "calltagger invoked"
-  #pathToTagger=os.path.join(os.getcwd())
-  pathToTagger= os.path.join(os.getcwd(),'getBiconcept')
+  #pathToTagger= os.path.join(os.getcwd(),'getBiconcept')
+  pathToTagger = 'getBiconcept'
   print pathToTagger
   print pathToPic
-  retcode = subprocess.call([pathToTagger,pathToPic])
+  try:
+    cmd = 'getBiconcept ' + pathToPic
+    process = subprocess.Popen(cmd, shell=True,
+                           stdout=subprocess.PIPE, 
+                           stderr=subprocess.PIPE)
+    # wait for the process to terminate
+    out, err = process.communicate()
+    errcode = process.returncode
+
+  except Exception as e:
+    print dir(e)
+    print e.message
+    print e.output
+    print "Error happened"
+  #print poutput
+  print out
+  print err
+  retcode = None
+  #retcode = subprocess.call ("getBiconcept "+pathToPic, shell=True)
+  #retcode = subprocess.call([pathToTagger,pathToPic])
   return retcode
 
 def process_queue(processed,randomlist):
@@ -172,4 +191,5 @@ def mat_main():
   print "Shutdown matlab- Gracefully exiting"
   return 
 """
-main()
+if __name__ == "__main__":
+   main()
