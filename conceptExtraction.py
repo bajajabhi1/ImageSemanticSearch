@@ -34,14 +34,15 @@ def retrieveResultsAPI(filename):
         filepath = os.path.join(resultdir,biconceptfile)
         resultfile = open(filepath, 'r')
         outlist = extractConceptList(classfile, resultfile)
-        if outlist == None:
-            print "Something went wrong- filesize mismatch-debug"
+        if type(outlist) == int:
+            print "Something went wrong- filesize mismatch-debug- count", outlist
         else:
             outDict["filename"] = filename
             outDict["features"] = outlist
-            print "Removing resultsfile ", resultfile
-            os.remove(filepath)
-    return outDict
+            #print "Removing resultsfile ", resultfile
+            #os.remove(filepath)
+            
+    return outDict, filepath
     #Remove output file
     
     
@@ -52,12 +53,12 @@ def extractConceptList(concepts=classfile, scores=None, limit = 0.0):
     for concept, score in izip(concepts,scores):
         count+=1
         outlist+=[{ "id"    :   count,
-                    "key"   :   concept,
-                    "value" :   score    }]
+                    "key"   :   concept.strip(),
+                    "value" :   score.strip()    }]
     if count==1200:
         return outlist
     else:
-        return None
+        return count
         
 #extractConcept(classfile,scoresfile)
 

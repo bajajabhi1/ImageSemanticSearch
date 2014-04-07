@@ -1,13 +1,28 @@
 import web, os
-import autoTagger
 import requests
 import json
+import time
 from conceptExtraction import retrieveResultsAPI
-from time import time
+
 
 import web
 
 urls = ('/upload', 'Upload')
+
+
+print "initializing new calltagger"
+def calltagger(filename="test.jpg"):
+    template = "matlab -nojvm -r \"getBiconcept('{0}'); quit;\"".format(filename)
+    print "Tagging ", filename
+    rcode = 0
+    try:
+        rcode=os.system(template)
+        time.sleep(5)
+    except:
+        print "Process start failed"
+    return rcode
+
+backendFailure = {"message": "backend failure"}
 
 class Upload:
     def GET(self):
@@ -34,16 +49,22 @@ class Upload:
             fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
             print "Writeout complete";
             fout.close() # closes the file, upload complete.
-            t1 = time()
+            t1 = time.time()
             print "Invoking autotagger"
             #Damn thing doesn't work, but let's assume it does
-            rcode = autoTagger.calltagger(filename)
+            rcode = calltagger(filename)
+            out_dict == {};
+            while(time.time()-t1<200 and (out_dict=={}
+                                     or
+                                     out_dict==backendFailure)):    
+                out_dict,fpath = retrieveResultsAPI(filename)
+                time.sleep(1)
             print "Tagging complete"
-            print "Time taken: ", time()-t1
-            out_dict = retrieveResultsAPI(filename)
+            print "Time taken: ", time.time()-t1
             print "final outdict received"
             #rcode
             os.remove(os.path.join(filedir,filename))
+            os.remove(fpath)
             print "File removal complete"
             
             #Now I need to access the output, parse it and return it as JSON            
@@ -56,16 +77,3 @@ if __name__ == "__main__":
 
 
 
-def postimg():
-    fileobj = open('test.jpg','rb')
-    print "Posting image"
-    """
-    r = requests.post('http://httpbin.org/post',
-        data = {'mysubmit':'Go'},
-        files = { 'archive':('testfile.jpg', fileobj) })
-    """
-    r = requests.post('http://localhost:8080/',
-        data = {'mysubmit':'Go'},
-        files = { 'archive':('testfile.jpg', fileobj) })
-    print r
-    print r.json()
