@@ -25,7 +25,7 @@ def retrieveResultsAPI(filename):
     """
     resultdir = os.path.join(os.getcwd(),"result")
     results = os.listdir(resultdir)
-    head = filename.split('.')[0]
+    head = filename.rpartition('.')[0]
     biconceptfile = head+'-biconcept.txt'
     outDict = {}
     filepath = None
