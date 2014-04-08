@@ -36,11 +36,13 @@ class Upload:
 
     def POST(self):
         x = web.input(myfile={})
+        tmpFileName = "temp.txt"
         filedir = os.getcwd() # change this to the directory you want to store the file in.
         web.header('Content-Type', 'application/json')
         out_dict = {"message": "backend failure"}
         if 'myfile' in x: # to check if the file-object is created
 
+            open(tmpFileName, 'a').close()
             print "old filename:", x.myfile.filename
             filename = os.path.split(x.myfile.filename)[-1]
             print "new filename", filename
@@ -53,17 +55,27 @@ class Upload:
             #Damn thing doesn't work, but let's assume it does
             rcode = calltagger(filename)
             out_dict == {};
-            while(time.time()-t1<200 and (out_dict=={}
-                                     or
-                                     out_dict==backendFailure)):    
-                out_dict,fpath = retrieveResultsAPI(filename)
-                time.sleep(1)
+			#while(time.time()-t1<200 and (out_dict=={}
+            #                         or
+            #                         out_dict==backendFailure)):    
+            #    out_dict,fpath = retrieveResultsAPI(filename)
+            #    time.sleep(1)
+            #time.sleep(2)
+            print "Waiting for matlab job."
+            while(os.path.isfile(tmpFileName)):
+                print "."
+				#out_dict,fpath = retrieveResultsAPI(filename)
+                time.sleep(10)
+				
+            out_dict,fpath = retrieveResultsAPI(filename)
+            print out_dict
+            print fpath
             print "Tagging complete"
             print "Time taken: ", time.time()-t1
             print "final outdict received"
             #rcode
             os.remove(os.path.join(filedir,filename))
-            os.remove(fpath)
+            #os.remove(fpath)
             print "File removal complete"
             
             #Now I need to access the output, parse it and return it as JSON            

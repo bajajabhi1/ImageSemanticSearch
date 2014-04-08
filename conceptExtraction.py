@@ -25,7 +25,7 @@ def retrieveResultsAPI(filename):
     """
     resultdir = os.path.join(os.getcwd(),"result")
     results = os.listdir(resultdir)
-    head = filename.rpartition('.')[0]
+    head = filename.split('.')[0]
     biconceptfile = head+'-biconcept.txt'
     outDict = {}
     filepath = None
@@ -34,7 +34,7 @@ def retrieveResultsAPI(filename):
         filepath = os.path.join(resultdir,biconceptfile)
         resultfile = open(filepath, 'r')
         outlist = extractConceptList(classfile, resultfile)
-        if type(outlist) == int:
+        if type(outlist) is int:
             print "Something went wrong- filesize mismatch-debug- count", outlist
         else:
             outDict["filename"] = filename
