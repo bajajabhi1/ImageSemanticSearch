@@ -1,5 +1,4 @@
 import web, os
-import requests
 import json
 import time
 from conceptExtraction import retrieveResultsAPI
