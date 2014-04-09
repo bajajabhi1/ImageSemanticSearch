@@ -34,6 +34,7 @@ def retrieveResultsAPI(filename):
         filepath = os.path.join(resultdir,biconceptfile)
         resultfile = open(filepath, 'r')
         outlist = extractConceptList(classfile, resultfile)
+        resultfile.close()
         if type(outlist) is int:
             print "Something went wrong- filesize mismatch-debug- count", outlist
         else:
@@ -56,6 +57,7 @@ def extractConceptList(concepts=classfile, scores=None, limit = 0.0):
                     "key"   :   concept.strip(),
                     "value" :   score.strip()    }]
     if count==1200:
+        outlist.sort(key=lambda x: float(x["value"]), reverse=True)
         return outlist
     else:
         return count
