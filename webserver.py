@@ -36,6 +36,7 @@ class Upload:
 
     def POST(self):
         x = web.input(myfile={})
+        #print x
         tmpFileName = "temp.txt"
         filedir = os.getcwd() # change this to the directory you want to store the file in.
         web.header('Content-Type', 'application/json')
@@ -43,8 +44,9 @@ class Upload:
         if 'myfile' in x: # to check if the file-object is created
 
             open(tmpFileName, 'a').close()
-            print "old filename:", x.myfile.filename
             filename = os.path.split(x.myfile.filename)[-1]
+            print "old filename:", filename
+            filename = os.path.split(filename)[-1]
             print "new filename", filename
             fout = open(os.path.join(filedir,filename),'wb') # creates the file where the uploaded file should be stored
             fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.

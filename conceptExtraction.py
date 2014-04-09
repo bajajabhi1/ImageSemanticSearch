@@ -3,9 +3,6 @@ from itertools import izip
 import json
 import os
 
-classfilepath = "class1200.txt"
-classfile = open(classfilepath,'r')
-
 #scoresfilepath = "brighteyes-biconcept.txt"
 #scoresfile = open(scoresfilepath,'r')
 
@@ -20,6 +17,9 @@ def extractConcept(concepts,scores, limit=0.7):
     return count
 
 def retrieveResultsAPI(filename):
+    classfilepath = "class1200.txt"
+    classfile = open(classfilepath,'r')
+
     """
     Open results directory
     """
@@ -42,12 +42,13 @@ def retrieveResultsAPI(filename):
             outDict["features"] = outlist
             #print "Removing resultsfile ", resultfile
             #os.remove(filepath)
-            
+    
+    classfile.close()
     return outDict, filepath
     #Remove output file
     
     
-def extractConceptList(concepts=classfile, scores=None, limit = 0.0):
+def extractConceptList(concepts, scores=None, limit = 0.0):
     #Takes concept values and parses them into a dictionary
     count = 0
     outlist = []
