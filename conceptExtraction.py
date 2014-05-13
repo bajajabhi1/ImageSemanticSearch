@@ -3,9 +3,6 @@ from itertools import izip
 import json
 import os
 
-classfilepath = "class1200.txt"
-classfile = open(classfilepath,'r')
-
 #scoresfilepath = "brighteyes-biconcept.txt"
 #scoresfile = open(scoresfilepath,'r')
 
@@ -20,6 +17,9 @@ def extractConcept(concepts,scores, limit=0.7):
     return count
 
 def retrieveResultsAPI(filename):
+    classfilepath = "class1200.txt"
+    classfile = open(classfilepath,'r')
+
     """
     Open results directory
     """
@@ -34,30 +34,34 @@ def retrieveResultsAPI(filename):
         filepath = os.path.join(resultdir,biconceptfile)
         resultfile = open(filepath, 'r')
         outlist = extractConceptList(classfile, resultfile)
-        if outlist == None:
-            print "Something went wrong- filesize mismatch-debug"
+        resultfile.close()
+        if type(outlist) is int:
+            print "Something went wrong- filesize mismatch-debug- count", outlist
         else:
             outDict["filename"] = filename
             outDict["features"] = outlist
-            print "Removing resultsfile ", resultfile
-            os.remove(filepath)
-    return outDict
+            #print "Removing resultsfile ", resultfile
+            #os.remove(filepath)
+    
+    classfile.close()
+    return outDict, filepath
     #Remove output file
     
     
-def extractConceptList(concepts=classfile, scores=None, limit = 0.0):
+def extractConceptList(concepts, scores=None, limit = 0.0):
     #Takes concept values and parses them into a dictionary
     count = 0
     outlist = []
     for concept, score in izip(concepts,scores):
         count+=1
         outlist+=[{ "id"    :   count,
-                    "key"   :   concept,
-                    "value" :   score    }]
+                    "key"   :   concept.strip(),
+                    "value" :   score.strip()    }]
     if count==1200:
+        outlist.sort(key=lambda x: float(x["value"]), reverse=True)
         return outlist
     else:
-        return None
+        return count
         
 #extractConcept(classfile,scoresfile)
 
